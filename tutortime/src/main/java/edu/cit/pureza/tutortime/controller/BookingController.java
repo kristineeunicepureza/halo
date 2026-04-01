@@ -170,6 +170,63 @@ public class BookingController {
         } catch (Exception e) { return ApiResponse.error("BOOKING_ERROR", e.getMessage()); }
     }
 
+    @PatchMapping("/{id}/complete")
+    public ApiResponse<Object> completeSession(@PathVariable Long id) {
+        try {
+            Booking b = bookingRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Booking not found"));
+            if (b.getStatus() != Booking.BookingStatus.CONFIRMED)
+                return ApiResponse.error("INVALID_STATUS", "Only CONFIRMED bookings can be marked as completed.");
+            b.setStatus(Booking.BookingStatus.COMPLETED);
+            bookingRepository.save(b);
+
+            notificationService.notifySessionCompleted(
+                    b.getStudent().getId(),
+                    b.getTutor().getFirstName() + " " + b.getTutor().getLastName(),
+                    b.getSubject(), b.getId());
+
+            return ApiResponse.success(toDto(b));
+        } catch (Exception e) { return ApiResponse.error("BOOKING_ERROR", e.getMessage()); }
+    }
+
+    @PatchMapping("/{id}/no-show-student")
+    public ApiResponse<Object> markStudentNoShow(@PathVariable Long id) {
+        try {
+            Booking b = bookingRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Booking not found"));
+            if (b.getStatus() != Booking.BookingStatus.CONFIRMED)
+                return ApiResponse.error("INVALID_STATUS", "Only CONFIRMED bookings can be marked as no-show.");
+            b.setStatus(Booking.BookingStatus.NO_SHOW_STUDENT);
+            bookingRepository.save(b);
+
+            notificationService.notifySessionNoShowStudent(
+                    b.getStudent().getId(),
+                    b.getTutor().getFirstName() + " " + b.getTutor().getLastName(),
+                    b.getSubject(), b.getId());
+
+            return ApiResponse.success(toDto(b));
+        } catch (Exception e) { return ApiResponse.error("BOOKING_ERROR", e.getMessage()); }
+    }
+
+    @PatchMapping("/{id}/no-show-tutor")
+    public ApiResponse<Object> markTutorNoShow(@PathVariable Long id) {
+        try {
+            Booking b = bookingRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Booking not found"));
+            if (b.getStatus() != Booking.BookingStatus.CONFIRMED)
+                return ApiResponse.error("INVALID_STATUS", "Only CONFIRMED bookings can be marked as no-show.");
+            b.setStatus(Booking.BookingStatus.NO_SHOW_TUTOR);
+            bookingRepository.save(b);
+
+            notificationService.notifySessionNoShowTutor(
+                    b.getStudent().getId(),
+                    b.getTutor().getFirstName() + " " + b.getTutor().getLastName(),
+                    b.getSubject(), b.getId());
+
+            return ApiResponse.success(toDto(b));
+        } catch (Exception e) { return ApiResponse.error("BOOKING_ERROR", e.getMessage()); }
+    }
+
     private void releaseSlot(Booking b) {
         if (b.getAvailabilitySlot() != null) {
             b.getAvailabilitySlot().setIsBooked(false);

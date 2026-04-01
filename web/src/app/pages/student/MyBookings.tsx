@@ -13,14 +13,17 @@ interface Booking {
 }
 
 const statusStyle: Record<string, React.CSSProperties> = {
-  PENDING:   { background: '#FFFBEB', color: '#D97706' },
-  CONFIRMED: { background: '#EFF6FF', color: '#2563EB' },
-  COMPLETED: { background: '#ECFDF5', color: '#059669' },
-  CANCELLED: { background: '#FEF2F2', color: '#DC2626' },
-  REJECTED:  { background: '#FEF2F2', color: '#DC2626' },
+  PENDING:            { background: '#FFFBEB', color: '#D97706' },
+  CONFIRMED:          { background: '#EFF6FF', color: '#2563EB' },
+  COMPLETED:          { background: '#ECFDF5', color: '#059669' },
+  NO_SHOW_STUDENT:    { background: '#FEF2F2', color: '#DC2626' },
+  NO_SHOW_TUTOR:      { background: '#FEF2F2', color: '#DC2626' },
+  CANCELLED:          { background: '#FEF2F2', color: '#DC2626' },
+  REJECTED:           { background: '#FEF2F2', color: '#DC2626' },
 };
 const accentLine: Record<string, string> = {
   PENDING: '#F59E0B', CONFIRMED: '#3B82F6', COMPLETED: '#10B981',
+  NO_SHOW_STUDENT: '#DC2626', NO_SHOW_TUTOR: '#DC2626',
   CANCELLED: '#DC2626', REJECTED: '#DC2626',
 };
 

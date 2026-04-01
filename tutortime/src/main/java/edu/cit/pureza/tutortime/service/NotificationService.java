@@ -74,6 +74,30 @@ public class NotificationService {
              NotificationType.TUTOR_APPROVED, null);
     }
 
+    /** Session completed → notify student */
+    public void notifySessionCompleted(Long studentId, String tutorName, String subject, Long bookingId) {
+        push(studentId,
+             "Session Completed",
+             "Your " + subject + " session with " + tutorName + " has been completed successfully.",
+             NotificationType.SESSION_COMPLETED, bookingId);
+    }
+
+    /** Student no-show → notify student */
+    public void notifySessionNoShowStudent(Long studentId, String tutorName, String subject, Long bookingId) {
+        push(studentId,
+             "Session Marked as No-Show",
+             "Your " + subject + " session with " + tutorName + " was marked as no-show.",
+             NotificationType.SESSION_NO_SHOW_STUDENT, bookingId);
+    }
+
+    /** Tutor no-show → notify student */
+    public void notifySessionNoShowTutor(Long studentId, String tutorName, String subject, Long bookingId) {
+        push(studentId,
+             "Tutor No-Show",
+             "Your " + subject + " session with " + tutorName + " was marked as tutor no-show.",
+             NotificationType.SESSION_NO_SHOW_TUTOR, bookingId);
+    }
+
     // ── read / count ──────────────────────────────────────────────────────
 
     public List<Notification> getForUser(Long userId) {
@@ -108,4 +132,4 @@ public class NotificationService {
                         .referenceId(referenceId)
                         .build());
     }
-} ginmurin <johnemmanuel.sevilla@cit.edu>.
+}

@@ -20,11 +20,13 @@ interface BookingRow {
 }
 
 const statusColor: Record<string, { bg: string; text: string; icon: React.ElementType }> = {
-  PENDING:   { bg: '#FFFBEB', text: '#D97706', icon: Clock       },
-  CONFIRMED: { bg: '#EFF6FF', text: '#2563EB', icon: CheckCircle2 },
-  COMPLETED: { bg: '#ECFDF5', text: '#059669', icon: Star         },
-  CANCELLED: { bg: '#FEF2F2', text: '#DC2626', icon: XCircle      },
-  REJECTED:  { bg: '#FEF2F2', text: '#DC2626', icon: XCircle      },
+  PENDING:            { bg: '#FFFBEB', text: '#D97706', icon: Clock       },
+  CONFIRMED:          { bg: '#EFF6FF', text: '#2563EB', icon: CheckCircle2 },
+  COMPLETED:          { bg: '#ECFDF5', text: '#059669', icon: CheckCircle2 },
+  NO_SHOW_STUDENT:    { bg: '#FEF2F2', text: '#DC2626', icon: XCircle      },
+  NO_SHOW_TUTOR:      { bg: '#FEF2F2', text: '#DC2626', icon: XCircle      },
+  CANCELLED:          { bg: '#FEF2F2', text: '#DC2626', icon: XCircle      },
+  REJECTED:           { bg: '#FEF2F2', text: '#DC2626', icon: XCircle      },
 };
 
 export function TutorStudents() {
@@ -78,6 +80,45 @@ export function TutorStudents() {
       setRejectReason('');
     } catch (err: any) {
       toast.error(err.message || 'Failed to reject');
+    } finally {
+      setActing(null);
+    }
+  };
+
+  const handleComplete = async (id: number) => {
+    setActing(id);
+    try {
+      await api.patch(`/api/bookings/${id}/complete`);
+      toast.success('Session marked as completed!');
+      setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'COMPLETED' } : b));
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to mark as completed');
+    } finally {
+      setActing(null);
+    }
+  };
+
+  const handleStudentNoShow = async (id: number) => {
+    setActing(id);
+    try {
+      await api.patch(`/api/bookings/${id}/no-show-student`);
+      toast.success('Session marked as student no-show!');
+      setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'NO_SHOW_STUDENT' } : b));
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to mark no-show');
+    } finally {
+      setActing(null);
+    }
+  };
+
+  const handleTutorNoShow = async (id: number) => {
+    setActing(id);
+    try {
+      await api.patch(`/api/bookings/${id}/no-show-tutor`);
+      toast.success('Session marked as tutor no-show!');
+      setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'NO_SHOW_TUTOR' } : b));
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to mark no-show');
     } finally {
       setActing(null);
     }
@@ -217,6 +258,45 @@ export function TutorStudents() {
                             onMouseLeave={e => e.currentTarget.style.background = '#FEF2F2'}
                           >
                             <X size={12} /> Reject
+                          </button>
+                        </div>
+                      ) : b.status === 'CONFIRMED' ? (
+                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                          {/* Complete */}
+                          <button
+                            onClick={() => handleComplete(b.id)}
+                            disabled={isActing}
+                            title="Mark session as completed"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '6px 10px', borderRadius: '8px', border: 'none', background: '#ECFDF5', color: '#059669', fontWeight: 600, fontSize: '11.5px', cursor: isActing ? 'not-allowed' : 'pointer', boxShadow: '0 2px 6px rgba(5,150,105,0.2)', transition: 'all 0.15s', opacity: isActing ? 0.5 : 1 }}
+                            onMouseEnter={e => { if (!isActing) e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                            onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                          >
+                            {isActing === b.id ? <Loader2 size={10} style={{ animation: 'spin 0.8s linear infinite' }} /> : <Check size={10} />}
+                            Complete
+                          </button>
+                          {/* Student No-Show */}
+                          <button
+                            onClick={() => handleStudentNoShow(b.id)}
+                            disabled={isActing}
+                            title="Mark student as no-show"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '6px 10px', borderRadius: '8px', border: '1px solid #FECACA', background: '#FEF2F2', color: '#DC2626', fontWeight: 600, fontSize: '11.5px', cursor: isActing ? 'not-allowed' : 'pointer', transition: 'all 0.15s', opacity: isActing ? 0.5 : 1 }}
+                            onMouseEnter={e => { if (!isActing) e.currentTarget.style.background = '#FECACA'; }}
+                            onMouseLeave={e => e.currentTarget.style.background = '#FEF2F2'}
+                          >
+                            {isActing === b.id ? <Loader2 size={10} style={{ animation: 'spin 0.8s linear infinite' }} /> : <>✕</>}
+                            Student No-Show
+                          </button>
+                          {/* Tutor No-Show */}
+                          <button
+                            onClick={() => handleTutorNoShow(b.id)}
+                            disabled={isActing}
+                            title="Mark yourself as no-show"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '6px 10px', borderRadius: '8px', border: '1px solid #FECACA', background: '#FEF2F2', color: '#DC2626', fontWeight: 600, fontSize: '11.5px', cursor: isActing ? 'not-allowed' : 'pointer', transition: 'all 0.15s', opacity: isActing ? 0.5 : 1 }}
+                            onMouseEnter={e => { if (!isActing) e.currentTarget.style.background = '#FECACA'; }}
+                            onMouseLeave={e => e.currentTarget.style.background = '#FEF2F2'}
+                          >
+                            {isActing === b.id ? <Loader2 size={10} style={{ animation: 'spin 0.8s linear infinite' }} /> : <>⚠️</>}
+                            Tutor No-Show
                           </button>
                         </div>
                       ) : (

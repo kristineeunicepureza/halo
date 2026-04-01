@@ -39,11 +39,14 @@ public class Notification {
     }
 
     public enum NotificationType {
-        BOOKING_CREATED,    // → tutor
-        BOOKING_CONFIRMED,  // → student
-        BOOKING_CANCELLED,  // → both
-        BOOKING_REJECTED,   // → student
-        TUTOR_REGISTERED,   // → admin
-        TUTOR_APPROVED      // → tutor
+        BOOKING_CREATED,        // → tutor
+        BOOKING_CONFIRMED,      // → student
+        BOOKING_CANCELLED,      // → both
+        BOOKING_REJECTED,       // → student
+        TUTOR_REGISTERED,       // → admin
+        TUTOR_APPROVED,         // → tutor
+        SESSION_COMPLETED,      // → student (session completed successfully)
+        SESSION_NO_SHOW_STUDENT,// → student (student missed session)
+        SESSION_NO_SHOW_TUTOR   // → student (tutor missed session)
     }
 }

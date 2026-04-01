@@ -71,8 +71,10 @@ public class Booking {
     public enum BookingStatus {
         PENDING,
         CONFIRMED,
-        REJECTED,
         COMPLETED,
+        NO_SHOW_STUDENT,
+        NO_SHOW_TUTOR,
+        REJECTED,
         CANCELLED
     }
 }
