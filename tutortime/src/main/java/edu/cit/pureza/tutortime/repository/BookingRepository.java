@@ -9,4 +9,5 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByStudentId(Long studentId);
     List<Booking> findByTutorId(Long tutorId);
+    long countByStatus(Booking.BookingStatus status);
 }

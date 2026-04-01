@@ -1,16 +1,29 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useApp } from '../../context/AppContext';
 import { Sidebar } from '../../components/shared/Sidebar';
 import { User, BookOpen, Users, Calendar, ArrowRight, Sparkles, TrendingUp, Clock } from 'lucide-react';
+import { api } from '../../services/apiService';
 
 export function StudentDashboard() {
   const { currentUser } = useApp();
   const navigate = useNavigate();
+  const [statsData, setStatsData] = useState({ upcomingSessions: 0, completedSessions: 0, totalBookings: 0 });
 
   useEffect(() => {
     if (!currentUser) navigate('/login');
+    loadStats();
   }, [currentUser, navigate]);
+
+  const loadStats = async () => {
+    if (!currentUser?.id) return;
+    try {
+      const data = await api.get(`/api/stats/student/${currentUser.id}`);
+      setStatsData(data);
+    } catch (e) {
+      console.error('Failed to load student stats', e);
+    }
+  };
 
   if (!currentUser) return null;
 
@@ -23,9 +36,9 @@ export function StudentDashboard() {
   ];
 
   const stats = [
-    { label: 'Active Bookings', value: '0', icon: Calendar, color: '#3B82F6' },
-    { label: 'Completed Sessions', value: '0', icon: TrendingUp, color: '#10B981' },
-    { label: 'Hours Learned', value: '0', icon: Clock, color: '#F59E0B' },
+    { label: 'Active Bookings', value: statsData.upcomingSessions, icon: Calendar, color: '#3B82F6' },
+    { label: 'Completed Sessions', value: statsData.completedSessions, icon: TrendingUp, color: '#10B981' },
+    { label: 'Total Bookings', value: statsData.totalBookings, icon: Clock, color: '#F59E0B' },
   ];
 
   return (

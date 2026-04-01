@@ -1,16 +1,28 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useApp } from '../../context/AppContext';
 import { Sidebar } from '../../components/shared/Sidebar';
 import { User, BookOpen, MapPin, ArrowRight, Sparkles, Users, Calendar, ShieldCheck } from 'lucide-react';
+import { api } from '../../services/apiService';
 
 export function AdminDashboard() {
   const { currentUser } = useApp();
   const navigate = useNavigate();
+  const [stats, setStats] = useState({ totalUsers: 0, activeSessions: 0, pendingReviews: 0 });
 
   useEffect(() => {
     if (!currentUser) navigate('/login');
+    loadStats();
   }, [currentUser, navigate]);
+
+  const loadStats = async () => {
+    try {
+      const data = await api.get('/api/admin/stats');
+      setStats(data);
+    } catch (e) {
+      console.error('Failed to load admin stats', e);
+    }
+  };
 
   if (!currentUser) return null;
 
@@ -94,9 +106,9 @@ export function AdminDashboard() {
           {/* Stats */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '28px' }}>
             {[
-              { label: 'Total Users', value: '0', icon: Users, color: '#3B82F6' },
-              { label: 'Active Sessions', value: '0', icon: Calendar, color: '#10B981' },
-              { label: 'Pending Reviews', value: '0', icon: ShieldCheck, color: '#F59E0B' },
+              { label: 'Total Users', value: stats.totalUsers, icon: Users, color: '#3B82F6' },
+              { label: 'Active Sessions', value: stats.activeSessions, icon: Calendar, color: '#10B981' },
+              { label: 'Pending Reviews', value: stats.pendingReviews, icon: ShieldCheck, color: '#F59E0B' },
             ].map(({ label, value, icon: Icon, color }) => (
               <div key={label} style={{
                 background: 'white', borderRadius: '16px', padding: '20px',
