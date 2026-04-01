@@ -16,9 +16,15 @@ export function AdminDashboard() {
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
+  const CatalogIcon = () => (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+      <BookOpen size={22} color="white" style={{ marginRight: '-4px' }} />
+      <MapPin size={22} color="white" />
+    </div>
+  );
+
   const quickActions = [
-    { icon: BookOpen, label: 'Manage Subjects', desc: 'Add/Edit subjects', path: '/admin/catalog', gradient: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', shadow: 'rgba(37,99,235,0.3)' },
-    { icon: MapPin, label: 'Manage Locations', desc: 'Add/Edit locations', path: '/admin/catalog', gradient: 'linear-gradient(135deg, #8B5CF6, #6D28D9)', shadow: 'rgba(139,92,246,0.3)' },
+    { icon: CatalogIcon, label: 'Manage Catalog', desc: 'Subjects & Locations', path: '/admin/catalog', gradient: 'linear-gradient(135deg, #6366F1, #4F46E5)', shadow: 'rgba(99,102,241,0.3)' },
     { icon: Users, label: 'Manage Users', desc: 'View all users', path: '/admin/users', gradient: 'linear-gradient(135deg, #10B981, #059669)', shadow: 'rgba(5,150,105,0.3)' },
     { icon: Calendar, label: 'Sessions', desc: 'Track all sessions', path: '/admin/sessions', gradient: 'linear-gradient(135deg, #F59E0B, #D97706)', shadow: 'rgba(217,119,6,0.3)' },
   ];
@@ -113,7 +119,7 @@ export function AdminDashboard() {
           <h2 style={{ color: '#001a4d', fontWeight: 800, fontSize: '17px', marginBottom: '14px', letterSpacing: '-0.3px' }}>
             Admin Controls
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
             {quickActions.map(({ icon: Icon, label, desc, path, gradient, shadow }) => (
               <button
                 key={path}
@@ -137,7 +143,7 @@ export function AdminDashboard() {
                 }}
               >
                 <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 4px 12px ${shadow}` }}>
-                  <Icon size={22} color="white" />
+                  <Icon />
                 </div>
                 <div>
                   <div style={{ color: '#001a4d', fontWeight: 700, fontSize: '14.5px', marginBottom: '3px' }}>{label}</div>
